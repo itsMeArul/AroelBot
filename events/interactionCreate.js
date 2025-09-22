@@ -52,7 +52,7 @@ module.exports = {
       } catch (error) {
         console.error(error);
         if (interaction.replied || interaction.deferred) {
-          await interaction.editReply({
+          await interaction.reply({
             content: "There was an error while executing this command!",
             flags: MessageFlags.Ephemeral,
           });
@@ -65,10 +65,7 @@ module.exports = {
       }
     } else if (interaction.isButton()) {
       try {
-        // Defer the response immediately to prevent timeout
-        if (!interaction.deferred && !interaction.replied) {
-          await interaction.deferReply({ ephemeral: true });
-        }
+          // Don't defer to allow direct replies
 
         if (interaction.customId === "getscript") {
           // First action: Call fetchKeyWithFallback to get user/key data
@@ -80,8 +77,9 @@ module.exports = {
 
             if (!keyResult.success || !keyResult.keyInfo) {
               console.log("[DEBUG] No key found, sending error message");
-              return await interaction.editReply({
+              return await interaction.reply({
                 content: "No license key found for you. Make sure you're whitelisted!",
+              ephemeral: true,
               });
             }
 
@@ -99,20 +97,23 @@ module.exports = {
 
             console.log("[DEBUG] Attempting to send message...");
             try {
-              await interaction.editReply({
+              await interaction.reply({
                 content: script,
+                ephemeral: true,
               });
               console.log("[DEBUG] Message sent successfully!");
             } catch (sendError) {
               console.error("[DEBUG] Error sending message:", sendError);
-              return await interaction.editReply({
+              return await interaction.reply({
                 content: "Error sending script. Please try again.",
+                ephemeral: true,
               });
             }
           } catch (error) {
             console.error("[DEBUG] Get script error:", error);
-            return await interaction.editReply({
+            return await interaction.reply({
               content: "Error fetching your license key. Please try again.",
+              ephemeral: true,
             });
           }
         } else if (interaction.customId === "resethwid") {
@@ -121,8 +122,9 @@ module.exports = {
             const keyResult = await apiClient.fetchKeyWithFallback(interaction.user.id);
 
             if (!keyResult.success || !keyResult.keyInfo) {
-              return await interaction.editReply({
+              return await interaction.reply({
                 content: "No license key found for you.",
+                ephemeral: true,
               });
             }
 
@@ -132,8 +134,9 @@ module.exports = {
 
             // If user has a generated key (no HWID), HWID is already reset
             if (keyResult.endpoint === 'generated') {
-              return await interaction.editReply({
+              return await interaction.reply({
                 content: "Your HWID has already been reset! You can use the script on any device.",
+                ephemeral: true,
               });
             }
 
@@ -157,15 +160,17 @@ module.exports = {
                     cooldownText = `${remainingMinutes} minutes`;
                   }
 
-                  return await interaction.editReply({
+                  return await interaction.reply({
                     content: `HWID reset is on cooldown! You can reset again in ${cooldownText}.`,
+                    ephemeral: true,
                   });
                 }
               }
 
               // Success response
-              return await interaction.editReply({
+              return await interaction.reply({
                 content: "HWID reset successfully! You can now use the script.",
+                ephemeral: true,
               });
 
             } catch (resetError) {
@@ -187,21 +192,24 @@ module.exports = {
                     cooldownText = `${remainingMinutes} minutes`;
                   }
 
-                  return await interaction.editReply({
+                  return await interaction.reply({
                     content: `HWID reset is on cooldown! You can reset again in ${cooldownText}.`,
+                    ephemeral: true,
                   });
                 }
               }
 
               // Generic error response
-              return await interaction.editReply({
+              return await interaction.reply({
                 content: "Failed to reset HWID. Please contact an administrator for assistance.",
+                ephemeral: true,
               });
             }
           } catch (error) {
             console.error('HWID reset system error:', error);
-            return await interaction.editReply({
+            return await interaction.reply({
               content: "System error occurred. Please contact an administrator.",
+              ephemeral: true,
             });
           }
         } else if (interaction.customId === "getstats") {
@@ -210,8 +218,9 @@ module.exports = {
             const keyResult = await apiClient.fetchKeyWithFallback(interaction.user.id);
 
             if (!keyResult.success || !keyResult.keyInfo) {
-              return await interaction.editReply({
+              return await interaction.reply({
                 content: "No license key found for you.",
+                ephemeral: true,
               });
             }
 
@@ -219,8 +228,9 @@ module.exports = {
             const keyInfo = keyResult.keyInfo;
 
             if (!keyInfo) {
-              return await interaction.editReply({
+              return await interaction.reply({
                 content: "No key information found!",
+              ephemeral: true,
               });
             }
 
@@ -276,18 +286,21 @@ module.exports = {
               allowed_mentions: { parse: [] },
             };
 
-            return await interaction.editReply({
+            return await interaction.reply({
               embeds: embedPayload.embeds,
+              ephemeral: true,
             });
           } catch (error) {
             console.error(error);
-            return await interaction.editReply({
+            return await interaction.reply({
               content: "Error fetching your stats!",
+              ephemeral: true,
             });
           }
         } else {
-          return await interaction.editReply({
+          return await interaction.reply({
             content: "Unknown button interaction.",
+            ephemeral: true,
           });
         }
       } catch (error) {
@@ -295,8 +308,9 @@ module.exports = {
 
         // Try to send error response, but handle cases where interaction has expired
         try {
-          await interaction.editReply({
+          await interaction.reply({
             content: "There was an error handling this button!",
+            ephemeral: true,
           });
         } catch (replyError) {
           console.error('Failed to send error response:', replyError);

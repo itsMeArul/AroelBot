@@ -4,7 +4,8 @@
       "WebFetch(domain:github.com)",
       "Bash(git checkout:*)",
       "Bash(git clean:*)",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Bash(timeout:*)"
     ],
     "deny": [],
     "ask": []
