@@ -81,8 +81,7 @@ module.exports = {
             if (!keyResult.success || !keyResult.keyInfo) {
               console.log("[DEBUG] No key found, sending error message");
               return await interaction.editReply({
-                content:
-                  "No license key found for you. Make sure you're whitelisted!",
+                content: "No license key found for you. Make sure you're whitelisted!",
               });
             }
 
@@ -167,7 +166,6 @@ module.exports = {
               // Success response
               return await interaction.editReply({
                 content: "HWID reset successfully! You can now use the script.",
-                flags: 64,
               });
 
             } catch (resetError) {
@@ -297,16 +295,9 @@ module.exports = {
 
         // Try to send error response, but handle cases where interaction has expired
         try {
-          if (interaction.deferred || interaction.replied) {
-            await interaction.editReply({
-              content: "There was an error handling this button!",
-            });
-          } else {
-            await interaction.reply({
-              content: "There was an error handling this button!",
-              flags: MessageFlags.Ephemeral,
-            });
-          }
+          await interaction.editReply({
+            content: "There was an error handling this button!",
+          });
         } catch (replyError) {
           console.error('Failed to send error response:', replyError);
           // Interaction has expired, nothing we can do

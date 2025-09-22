@@ -33,8 +33,11 @@ module.exports = {
     const user = interaction.options.getUser("user");
     const additionalDays = interaction.options.getInteger("days");
 
-    // Defer the response to prevent timeout
-    await interaction.deferReply();
+    // Reply immediately to prevent timeout
+    await interaction.reply({
+      content: "Processing your license extension request...",
+      ephemeral: true,
+    });
 
     try {
 
@@ -42,8 +45,9 @@ module.exports = {
       const existingKeyResult = await apiClient.fetchKeyWithFallback(user.id);
 
       if (!existingKeyResult.success || !existingKeyResult.keyInfo) {
-        return await interaction.editReply({
+        return await interaction.reply({
           content: `${user} does not have a license key to extend. Use /whitelist to create one first.`,
+          ephemeral: true,
         });
       }
 
@@ -183,14 +187,16 @@ module.exports = {
 
       await user.send(embedPayload);
 
-      await interaction.editReply({
+      await interaction.reply({
         content: `Successfully extended ${user}'s license by ${additionalDays} days. New expiration: ${newExpireDisplay}`,
+        ephemeral: true,
       });
 
     } catch (error) {
       console.error('Extend command error:', error);
-      await interaction.editReply({
+      await interaction.reply({
         content: `Failed to extend license: ${error.message}`,
+        ephemeral: true,
       });
     }
   },

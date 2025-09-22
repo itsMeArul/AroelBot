@@ -60,8 +60,11 @@ module.exports = {
       });
     }
 
-    // Defer the response to prevent timeout
-    await interaction.deferReply();
+    // Reply immediately to prevent timeout
+    await interaction.reply({
+      content: "Processing your whitelist request...",
+      ephemeral: true,
+    });
 
     const now = new Date();
     const expireDate = new Date(now);
@@ -97,8 +100,9 @@ module.exports = {
       const existingKeyResult = await apiClient.fetchKeyWithFallback(user.id);
 
       if (existingKeyResult.success && existingKeyResult.keyInfo) {
-        return await interaction.editReply({
+        return await interaction.reply({
           content: `${user} already has a license key! Key found: ${existingKeyResult.keyInfo.value}`,
+          ephemeral: true,
         });
       }
 
@@ -157,13 +161,15 @@ module.exports = {
 
       await user.send(embedPayload);
 
-      await interaction.editReply({
+      await interaction.reply({
         content: `${user} has been whitelisted for **${durationText}** (expires on **${expireStringDisplay}**).`,
+        ephemeral: true,
       });
     } catch (error) {
       console.error(error);
-      await interaction.editReply({
+      await interaction.reply({
         content: `Failed to generate key: ${error.message}`,
+        ephemeral: true,
       });
     }
   },
