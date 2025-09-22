@@ -86,28 +86,34 @@ module.exports = {
               });
             }
 
-          console.log("[DEBUG] Key found, extracting data");
-          // Extract key from the keyInfo provided by fetchKeyWithFallback
-          const keyData = keyResult.keyInfo;
-          console.log("[DEBUG] keyData structure:", JSON.stringify(keyData, null, 2));
+            console.log("[DEBUG] Key found, extracting data");
+            // Extract key from the keyInfo provided by fetchKeyWithFallback
+            const keyData = keyResult.keyInfo;
+            console.log("[DEBUG] keyData structure:", JSON.stringify(keyData, null, 2));
 
-          // Handle both active key (value field) and generated key (id field) structures
-          const keyValue = keyData.value || keyData.id || keyData.key;
-          console.log("[DEBUG] Extracted keyValue:", keyValue);
+            // Handle both active key (value field) and generated key (id field) structures
+            const keyValue = keyData.value || keyData.id || keyData.key;
+            console.log("[DEBUG] Extracted keyValue:", keyValue);
 
-          const script = `script_key = "${keyValue}"\nloadstring(game:HttpGet("https://pandadevelopment.net/virtual/file/698f4f0f8cfcf000"))()`;
-          console.log("[DEBUG] Generated script:", script);
+            const script = `script_key = "${keyValue}"\nloadstring(game:HttpGet("https://pandadevelopment.net/virtual/file/698f4f0f8cfcf000"))()`;
+            console.log("[DEBUG] Generated script:", script);
 
-          console.log("[DEBUG] Attempting to send message...");
-          try {
-            await interaction.editReply({
-              content: script,
-            });
-            console.log("[DEBUG] Message sent successfully!");
-          } catch (sendError) {
-            console.error("[DEBUG] Error sending message:", sendError);
+            console.log("[DEBUG] Attempting to send message...");
+            try {
+              await interaction.editReply({
+                content: script,
+              });
+              console.log("[DEBUG] Message sent successfully!");
+            } catch (sendError) {
+              console.error("[DEBUG] Error sending message:", sendError);
+              return await interaction.editReply({
+                content: "Error sending script. Please try again.",
+              });
+            }
+          } catch (error) {
+            console.error("[DEBUG] Get script error:", error);
             return await interaction.editReply({
-              content: "Error sending script. Please try again.",
+              content: "Error fetching your license key. Please try again.",
             });
           }
         } else if (interaction.customId === "resethwid") {

@@ -3,7 +3,8 @@
     "allow": [
       "WebFetch(domain:github.com)",
       "Bash(git checkout:*)",
-      "Bash(git clean:*)"
+      "Bash(git clean:*)",
+      "Bash(node:*)"
     ],
     "deny": [],
     "ask": []
