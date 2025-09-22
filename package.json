@@ -1,0 +1,28 @@
+{
+  "name": "aroelbot-api",
+  "version": "2.0.0",
+  "description": "Discord bot with API-based user management",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js",
+    "register-commands": "node slashcmd.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "discord",
+    "bot",
+    "api"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^14.22.1",
+    "dotenv": "^16.3.1",
+    "node-fetch": "^2.7.0",
+    "pelindajs": "^1.0.4"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
